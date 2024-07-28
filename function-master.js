@@ -91,7 +91,7 @@ function capitalizeWord(string) {
 function capitalizeAllWords(string) {
   var words = string.split(' ')
 
-  for(let i = 0; i < words.length; i++){
+  for (let i = 0; i < words.length; i++) {
     words[i] = words[i][0].toUpperCase() + words[i].substr(1);
   }
   return words.join(' ');
@@ -131,7 +131,7 @@ function profileInfo(object) {
   var n = object['name'].charAt(0).toUpperCase() + object["name"].slice(1);
   var s = object['species'].charAt(0).toUpperCase() + object["species"].slice(1);
 
-      return n + ' is a ' + s;
+  return n + ' is a ' + s;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -145,12 +145,12 @@ function profileInfo(object) {
  */
 function maybeNoises(object) {
 
-   // Check if the object has a noises property and if it's an array
-  if(Array.isArray(object.noises) && object.noises.length > 0){
+  // Check if the object has a noises property and if it's an array
+  if (Array.isArray(object.noises) && object.noises.length > 0) {
     // Join the noises array into a string separated by spaces
     return object.noises.join(' ');
     // Return the message if there are no noises
-  }else{
+  } else {
     return 'there are no noises';
   }
 
@@ -162,6 +162,10 @@ function maybeNoises(object) {
 //////////////////////////////////////////////////////////////////////
 
 function hasWord(string, word) {
+  // Use a regular expression to search for the whole word in the string
+  const has = new RegExp('\\b' + word + '\\b', 'i');
+  return has.test(string);
+
 
 }
 
@@ -170,7 +174,15 @@ function hasWord(string, word) {
 //////////////////////////////////////////////////////////////////////
 
 function addFriend(name, object) {
-
+  // Check if the object has a 'friends' property
+  if (object.friends && Array.isArray(object.friends)) {
+    // Add the new friend to the friends array
+    object.friends.push(name);
+  } else {
+    // If the 'friends' property doesn't exist, create it and add the new friend
+    object.friends = [name];
+  }
+  return object;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -178,7 +190,13 @@ function addFriend(name, object) {
 //////////////////////////////////////////////////////////////////////
 
 function isFriend(name, object) {
-
+  // Check if the object has a 'friends' property and if it is an array
+  if (object.friends && Array.isArray(object.friends)) {
+    // Check if the name is in the friends array
+    return object.friends.indexOf(name) !== -1;
+  }
+  // If the 'friends' property doesn't exist or is not an array, return false
+  return false;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -186,7 +204,31 @@ function isFriend(name, object) {
 //////////////////////////////////////////////////////////////////////
 
 function nonFriends(name, array) {
+  var person = null;
+  var allNames = [];
 
+  // Find the person object with the given name and collect all names in the array
+  for (var i = 0; i < array.length; i++) {
+    if (array[i].name === name) {
+      person = array[i];
+    }
+    allNames.push(array[i].name);
+  }
+
+  // If the person is not found, return an empty array
+  if (!person) {
+    return [];
+  }
+
+  // Collect names that are not in the person's friends list
+  var nonFriends = [];
+  for (var j = 0; j < allNames.length; j++) {
+    if (allNames[j] !== name && person.friends.indexOf(allNames[j]) === -1) {
+      nonFriends.push(allNames[j]);
+    }
+  }
+
+  return nonFriends;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -194,7 +236,9 @@ function nonFriends(name, array) {
 //////////////////////////////////////////////////////////////////////
 
 function updateObject(object, key, value) {
-
+  // Update the property value or add the property if it doesn't exist
+  object[key] = value;
+  return object;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -202,7 +246,13 @@ function updateObject(object, key, value) {
 //////////////////////////////////////////////////////////////////////
 
 function removeProperties(object, array) {
-
+  for (var i = 0; i < array.length; i++) {
+    var key = array[i];
+    if (object.hasOwnProperty(key)) {
+      delete object[key];
+    }
+  }
+  return object;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -210,7 +260,18 @@ function removeProperties(object, array) {
 //////////////////////////////////////////////////////////////////////
 
 function dedup(array) {
-
+    // Initialize an empty array to store unique values
+  var uniqueArray = [];
+    // Iterate through each element in the input array
+  for (var i = 0; i < array.length; i++) {
+       // Check if the current element is already in the uniqueArray
+    if (uniqueArray.indexOf(array[i]) === -1) {
+           // If the element is not in the uniqueArray, add it
+      uniqueArray.push(array[i]);
+    }
+  }
+  // Return the array containing only unique values
+  return uniqueArray;
 }
 
 //////////////////////////////////////////////////////////////////////
